@@ -3,7 +3,7 @@
   "short_name": "Nameyer",
   "description": "Smart Business Name Generator",
   "start_url": "/nameyer/index.html?v=1.0",
-  "scope": "/nameyer/",
+  "scope": "/Nameyer/",
   "display": "standalone",
   "background_color": "#f2f4f8",
   "theme_color": "#2563eb",
