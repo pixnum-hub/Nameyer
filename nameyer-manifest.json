@@ -1,0 +1,22 @@
+{
+  "name": "Nameyer",
+  "short_name": "Nameyer",
+  "description": "Smart Business Name Generator",
+  "start_url": "/nameyer/index.html?v=1.0",
+  "scope": "/nameyer/",
+  "display": "standalone",
+  "background_color": "#f2f4f8",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "nameyer-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "nameyer-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
