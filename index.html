@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nameyer – Business Name Generator</title>
+
+<!-- PWA -->
+<link rel="manifest" href="nameyer-manifest.json">
+<link rel="apple-touch-icon" href="nameyer-192.png">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI,Arial;
+  background:#f2f4f8;
+  display:flex;
+  justify-content:center;
+  padding:20px;
+}
+body.dark{background:#121212;color:#eee}
+
+.app{
+  max-width:760px;
+  width:100%;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15)
+}
+body.dark .app{background:rgba(30,30,30,.92)}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px
+}
+
+.toggle{
+  width:42px;height:42px;
+  border-radius:50%;
+  border:none;
+  background:#000;
+  color:#fff;
+  cursor:pointer
+}
+
+input,select,button{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid #ccc;
+  font-size:16px;
+  box-sizing:border-box;
+  margin-bottom:12px
+}
+
+button{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  cursor:pointer
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap
+}
+.row button{flex:1}
+
+.slider-container{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.slider-container label{min-width:130px}
+.slider-container input{flex:1}
+
+#installBtn{
+  display:none;
+  background:#16a34a
+}
+
+.names{
+  margin-top:15px;
+  max-height:380px;
+  overflow:auto
+}
+.name{
+  background:rgba(255,255,255,.75);
+  padding:12px;
+  border-radius:14px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between
+}
+body.dark .name{background:rgba(50,50,50,.75)}
+
+.footer{
+  margin-top:25px;
+  text-align:center;
+  font-size:13px;
+  opacity:.7
+}
+body.dark .footer{color:#bbb}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="top">
+  <div>
+    <h2>Nameyer</h2>
+    <small>Smart Business Name Generator</small>
+  </div>
+  <button class="toggle" id="darkBtn">🌙</button>
+</div>
+
+<input id="keyword" placeholder="Enter main keyword">
+
+<select id="category">
+  <option value="">Category</option>
+  <option>Finance</option><option>Healthcare</option><option>Education</option>
+  <option>Consulting</option><option>Marketing</option><option>RealEstate</option>
+  <option>Ecommerce</option><option>SaaS</option><option>AI</option>
+  <option>Logistics</option><option>Energy</option><option>Retail</option>
+  <option>Media</option><option>Startup</option><option>Enterprise</option>
+</select>
+
+<select id="type">
+  <option value="">Type</option>
+  <option>Startup</option><option>Agency</option><option>Company</option>
+  <option>Solutions</option><option>Labs</option><option>Studio</option>
+  <option>Group</option><option>Hub</option><option>Consultancy</option>
+  <option>Ventures</option><option>Holdings</option>
+</select>
+
+<select id="genre">
+  <option value="">Genre</option>
+  <option>Professional</option><option>Corporate</option>
+  <option>Innovative</option><option>Creative</option>
+  <option>Premium</option><option>Modern</option>
+  <option>Trusted</option><option>Visionary</option>
+</select>
+
+<div class="slider-container">
+  <label>Max Characters: <b id="lenVal">8</b></label>
+  <input type="range" min="0" max="15" value="8" id="len">
+</div>
+
+<!-- ✅ INSTALL BUTTON — EXACT PLACE -->
+<button id="installBtn">Install App</button>
+
+<div class="row">
+  <button id="generate">Generate</button>
+  <button id="copyAll">Copy All</button>
+  <button id="save">Save</button>
+  <button id="reset">Reset</button>
+</div>
+
+<div class="names" id="output"></div>
+<canvas id="chart"></canvas>
+
+<footer class="footer">
+© Manik Roy 2025. All Rights Reserved.
+</footer>
+
+</div>
+
+<script>
+/* ===== APP LOGIC ===== */
+const syll1=["ne","va","lu","ra","mi","xo","ka","te"];
+const syll2=["ra","lo","mi","ta","sa","do","fi"];
+const used=new Set();
+let chart;
+
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+generate.onclick=()=>{
+  const k=keyword.value.toLowerCase();
+  const m=+len.value;
+  if(!k)return;
+  output.innerHTML="";
+  used.clear();
+  let res=[];
+  while(res.length<15){
+    let n=cap((k.slice(0,2)+syll1[Math.random()*8|0]+syll2[Math.random()*7|0]).slice(0,m));
+    if(used.has(n))continue;
+    used.add(n);
+    res.push({n,s:70+Math.random()*30|0});
+  }
+  if(chart)chart.destroy();
+  res.forEach(x=>output.innerHTML+=
+    `<div class="name"><span>${x.n}</span><small>${x.s} pts</small></div>`
+  );
+  chart=new Chart(document.getElementById("chart"),{
+    type:"bar",
+    data:{labels:res.map(x=>x.n),datasets:[{data:res.map(x=>x.s)}]},
+    options:{plugins:{legend:{display:false}}}
+  });
+};
+
+copyAll.onclick=()=>navigator.clipboard.writeText([...used].join("\n"));
+save.onclick=()=>{
+  const b=new Blob([[...used].join("\n")]);
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(b);
+  a.download="nameyer-names.txt";
+  a.click();
+};
+reset.onclick=()=>{output.innerHTML="";used.clear();};
+darkBtn.onclick=()=>document.body.classList.toggle("dark");
+len.oninput=e=>lenVal.textContent=e.target.value;
+
+/* ===== 5️⃣ INSTALL BUTTON LOGIC (EXACT PLACE) ===== */
+let deferredPrompt;
+const installBtn=document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  installBtn.style.display="block";
+});
+
+installBtn.onclick=async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt=null;
+  installBtn.style.display="none";
+};
+
+/* ===== 4️⃣ SERVICE WORKER REGISTRATION (BOTTOM) ===== */
+if("serviceWorker"in navigator){
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
+
+</body>
+</html>
